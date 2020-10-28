@@ -1,0 +1,87 @@
+<!DOCTYPE html> 
+<html lang="en">
+    <head>
+        <title>Stocks API</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="[REDACTED]" crossorigin="anonymous">
+    </head>
+    <style>
+        .jumbotron{
+            color:rgb(144, 75, 161);
+            font-size: large;
+            background:lightcyan;
+        }
+        .is-success{
+            background-color: lightgreen;
+            text-align: center;
+        }
+        .is-danger{
+            background-color: rgb(245, 83, 83);
+            text-align: center;
+        }
+        .message{
+            font-size: 1.5em;
+            color:whitesmoke;
+            padding: 4px;
+        }
+    </style>
+    <body>
+        <div class="jumbotron">
+          <h1>Stocks API</h1>
+          <p>Find out latest price on any stocks along with news related to stock.</p>
+          <p>Made by Ajaybir Randhawa</p>
+        </div>
+        
+    <div class="container">
+	<div class="row justify-content-center" style="padding-bottom: 20px;">
+        <div class="col-12 col-md-10 col-lg-8">
+            <form class="card card-sm" method="POST">
+                {% csrf_token %}
+                <div class="card-body row no-gutters align-items-center">
+                    <div class="col">   
+                        {{ form.name }}
+                    </div>
+                    <div class="col-auto">
+                        <button class="btn btn-lg btn-success" type="submit">Search</button>
+                    </div>
+                </div>
+            </form>
+            {% if message %}
+                <div class="card message {{message_class}}">{{ message }}</div>
+            {% endif %}
+        </div>
+    </div>
+        <div class="result-container">
+            <div class="row" style="padding-left: 55px;">
+                {% for stocks_result in stock_data %}
+                <div class="col-sm-{{stocks_result.num}}" style="padding-bottom: 5px; padding-left: 15px;">
+                    <div class="box">
+                        <article class="media">
+                            <div class="media-content">
+                                <div class="content">
+                                    <div class="card" style="width: 20rem;">
+                                        <div class="card-body">
+                                          <h4 class="card-title"><a href='{{ stocks_result.website}}' class="card-link">{{stocks_result.name }}</a></h4>
+                                          <a href="{% url 'delete_company' stocks_result.symbol %}" >
+                                                <button class="btn btn-danger btn-sm rounded-0" type="button" data-toggle="tooltip" data-placement="top" title="Delete"><i class="fa fa-trash"></i></button><br>
+                                            </a><br>
+                                          <h6 class="card-subtitle mb-2 text-muted">Sector: {{ stocks_result.sector}} </h6><br>
+                                          <h5 class="card-subtitle mb-2 text-muted">Price ({{stocks_result.currency}}): {{ stocks_result.price}} </h5>
+                                          <h6 class="card-subtitle mb-2 text-muted">Market Open: {{ stocks_result.marketOpen}} </h6>
+                                          <h6 class="card-subtitle mb-2 text-muted">Market High: {{ stocks_result.marketHigh}} </h6>
+                                          <h6 class="card-subtitle mb-2 text-muted">Market Low: {{ stocks_result.marketLow}} </h6>
+                                          <h6 class="card-subtitle mb-2 text-muted">Previous Close: {{ stocks_result.previousClose}} </h6>
+                                        </div>
+                                      </div>
+                                </div>
+                            </div>
+                        </article>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </body>
+</html>
